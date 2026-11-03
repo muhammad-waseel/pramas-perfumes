@@ -92,13 +92,31 @@ p { margin: 0 0 1em; }
 .header-search { display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--line); padding: 6px 2px; width: min(260px, 100%); color: var(--muted); }
 .header-search input, .nav-search input { border: 0; outline: none; background: none; width: 100%; padding: 2px 0; font-size: 0.88rem; color: var(--ink); }
 .header-icons { display: flex; justify-content: flex-end; gap: 2px; }
-.menu-btn { display: none; }
+.menu-btn { display: inline-grid; }
 .nav { border-top: 1px solid var(--line); }
 .nav-inner { display: flex; justify-content: center; gap: 34px; height: 46px; align-items: center; }
 .nav a { text-decoration: none; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; padding: 13px 0; border-bottom: 2px solid transparent; }
 .nav a:hover, .nav a.active { border-color: var(--ink); }
 .nav a.nav-sale { color: var(--sale); }
-.nav-search { display: none; }
+/* Side menu */
+.side-wrap { position: fixed; inset: 0; z-index: 65; pointer-events: none; }
+.side-wrap.open { pointer-events: auto; }
+.side-wrap.open .drawer-backdrop { opacity: 1; }
+.side { position: absolute; top: 0; left: 0; height: 100%; width: min(360px, 88%); background: #fff; display: flex; flex-direction: column; transform: translateX(-100%); transition: transform 0.3s ease; }
+.side-wrap.open .side { transform: none; }
+.side-head { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; border-bottom: 1px solid var(--line); }
+.side-head .brand-word { font-size: 1.5rem; }
+.side-search { display: flex; align-items: center; gap: 8px; margin: 16px 20px 4px; padding: 10px 12px; border: 1px solid var(--line); color: var(--muted); }
+.side .side-search input { border: 0; padding: 0; outline: none; background: none; }
+.side-body { flex: 1; overflow-y: auto; padding: 0 20px 20px; }
+.side-label { font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-2); font-weight: 600; margin: 22px 0 4px; }
+.side-link { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 13px 0; border: 0; border-bottom: 1px solid var(--line); background: none; text-decoration: none; text-align: left; font-size: 0.9rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); }
+.side-link svg { opacity: 0.35; transition: transform 0.2s, opacity 0.2s; }
+.side-link:hover svg, .side-link.active svg { opacity: 1; transform: translateX(3px); }
+.side-link.nav-sale { color: var(--sale); }
+.side-foot { display: grid; gap: 8px; padding: 16px 20px; background: var(--soft); font-size: 0.82rem; color: var(--ink-2); }
+.side-foot span { display: flex; align-items: center; gap: 8px; }
+.side-foot svg { color: var(--gold-2); }
 
 /* Hero slider */
 .slider { position: relative; height: clamp(420px, 56vw, 640px); overflow: hidden; background: #222; }
@@ -391,7 +409,8 @@ select:focus, input:focus, textarea:focus { border-color: var(--ink); }
 
 /* Responsive */
 @media (max-width: 1100px) {
-  .nav-inner { gap: 22px; }
+  .nav-inner { gap: 20px; }
+  .nav a { font-size: 0.72rem; }
   .cats { gap: 10px; }
 }
 @media (max-width: 1024px) {
@@ -402,15 +421,10 @@ select:focus, input:focus, textarea:focus { border-color: var(--ink); }
   .usp { justify-content: flex-start; }
 }
 @media (max-width: 860px) {
-  .menu-btn { display: inline-grid; }
   .header-search { display: none; }
   .header-main { height: 66px; }
   .brand-word { font-size: 1.5rem; }
-  .nav { display: none; position: absolute; top: 66px; left: 0; right: 0; background: #fff; border-bottom: 1px solid var(--line); max-height: calc(100vh - 100px); overflow-y: auto; }
-  .nav.open { display: block; }
-  .nav-inner { flex-direction: column; align-items: stretch; height: auto; gap: 0; padding: 8px 0 16px; }
-  .nav a { padding: 14px 0; border-bottom: 1px solid var(--line); }
-  .nav-search { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); padding: 10px 12px; margin: 6px 0 8px; }
+  .nav { display: none; }
   .slide-shade { background: linear-gradient(0deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.15) 70%); }
   .slide-copy { justify-content: flex-end; padding-bottom: 60px; }
   .slide-arrow { display: none; }

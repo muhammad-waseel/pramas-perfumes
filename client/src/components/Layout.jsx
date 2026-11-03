@@ -8,6 +8,8 @@ import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 
 const NAV = [
+  ['/', 'Home'],
+  ['/shop', 'Shop All'],
   ['/shop?flag=new', 'New Arrivals'],
   ['/shop?category=men', 'Men'],
   ['/shop?category=women', 'Women'],
@@ -58,8 +60,8 @@ export function Header() {
       <header className="header">
         <div className="container header-main">
           <div className="header-left">
-            <button type="button" className="icon-btn menu-btn" onClick={() => setMenu((m) => !m)} aria-label="Menu">
-              <Icon name={menu ? 'close' : 'menu'} />
+            <button type="button" className="icon-btn menu-btn" onClick={() => setMenu(true)} aria-label="Open menu" aria-expanded={menu} data-cy="menu-button">
+              <Icon name="menu" />
             </button>
             <form className="header-search" onSubmit={submit} role="search">
               <Icon name="search" size={18} />
@@ -85,15 +87,8 @@ export function Header() {
             </button>
           </div>
         </div>
-        <nav className={`nav ${menu ? 'open' : ''}`} aria-label="Main">
+        <nav className="nav" aria-label="Main">
           <div className="container nav-inner">
-            <form className="nav-search" onSubmit={submit} role="search">
-              <Icon name="search" size={18} />
-              <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search perfumes, notes…" aria-label="Search" />
-            </form>
-            <Link to="/shop" className={current === '/shop' ? 'active' : ''}>
-              Shop All
-            </Link>
             {NAV.map(([to, label]) => (
               <Link key={to} to={to} className={`${current === to ? 'active' : ''} ${label === 'Sale' ? 'nav-sale' : ''}`}>
                 {label}
@@ -103,7 +98,86 @@ export function Header() {
           </div>
         </nav>
       </header>
+      <Sidebar open={menu} onClose={() => setMenu(false)} q={q} setQ={setQ} submit={submit} current={current} />
     </>
+  );
+}
+
+function Sidebar({ open, onClose, q, setQ, submit, current }) {
+  const { user, logout } = useAuth();
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKey = (e) => e.key === 'Escape' && onClose();
+    window.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [open, onClose]);
+
+  const link = (to, label, extra = '') => (
+    <Link key={to + label} to={to} className={`side-link ${current === to ? 'active' : ''} ${extra}`} onClick={onClose}>
+      {label}
+      <Icon name="arrow" size={14} />
+    </Link>
+  );
+
+  return (
+    <div className={`side-wrap ${open ? 'open' : ''}`} aria-hidden={!open}>
+      <div className="drawer-backdrop" onClick={onClose} />
+      <aside className="side" role="dialog" aria-label="Menu" data-cy="sidebar">
+        <div className="side-head">
+          <Logo />
+          <button type="button" className="icon-btn" onClick={onClose} aria-label="Close menu">
+            <Icon name="close" />
+          </button>
+        </div>
+        <form
+          className="side-search"
+          onSubmit={(e) => {
+            submit(e);
+            onClose();
+          }}
+          role="search"
+        >
+          <Icon name="search" size={18} />
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search perfumes, notes…" aria-label="Search" />
+        </form>
+        <nav className="side-body">
+          <p className="side-label">Shop</p>
+          {NAV.filter(([to]) => to !== '/track').map(([to, label]) => link(to, label, label === 'Sale' ? 'nav-sale' : ''))}
+          <p className="side-label">My account</p>
+          {link('/account', user ? `My orders (${user.name.split(' ')[0]})` : 'Log in / Create account')}
+          {link('/wishlist', 'Wishlist')}
+          {link('/track', 'Track your order')}
+          {user?.role === 'admin' && link('/admin', 'Admin panel')}
+          <p className="side-label">Pramas</p>
+          {link('/about', 'Our story')}
+          {link('/about', 'Delivery & exchanges')}
+          {user && (
+            <button
+              type="button"
+              className="side-link link-plain"
+              onClick={() => {
+                logout();
+                onClose();
+              }}
+            >
+              Log out
+            </button>
+          )}
+        </nav>
+        <div className="side-foot">
+          <span>
+            <Icon name="cash" size={16} /> Cash on Delivery
+          </span>
+          <span>
+            <Icon name="truck" size={16} /> Free delivery over Rs 5,000
+          </span>
+        </div>
+      </aside>
+    </div>
   );
 }
 
