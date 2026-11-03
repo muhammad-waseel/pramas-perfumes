@@ -449,3 +449,4 @@ select:focus, input:focus, textarea:focus { border-color: var(--ink); }
   .split-copy h3 { font-size: 1.5rem; }
   .editor-top { flex-direction: column; }
 }
+.header .header-search input, .header .nav-search input { border: 0; padding: 2px 0; background: none; }
