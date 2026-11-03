@@ -5,7 +5,7 @@ Customers can browse, filter and buy perfumes with Cash on Delivery, track their
 
 > Pramas is a demo brand made for this portfolio project. Orders are not shipped and no payment is taken.
 
-**Live demo:** _coming soon_
+**Live demo:** https://pramas-perfumes.onrender.com
 
 ## Features
 
